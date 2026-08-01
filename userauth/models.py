@@ -7,7 +7,7 @@ class Profile(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     id_user = models.IntegerField()
     bio = models.TextField(blank=True, default='')
-    profileimg = models.ImageField(upload_to='profile_images', default='dog.webp')
+    profileimg = models.ImageField(upload_to='profile_images', default='images/dog.webp')
     location = models.CharField(max_length=100, blank=True, default='')
 
     def __str__(self):
