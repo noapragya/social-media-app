@@ -115,24 +115,29 @@
 
                 <!-- Home Posts Feed -->
                  <!-- Check if the logged-in user is the author of the post -->
-{% if post.user == request.user.username %}
-    <div class="dropdown">
-        <button class="btn btn-sm btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-            <i class="fa-solid fa-ellipsis-vertical"></i>
-        </button>
-        <ul class="dropdown-menu">
-            <li>
-                <a class="dropdown-item text-danger" href="{% url 'delete-post' post.id %}">
-                    <i class="fa-solid fa-trash me-2"></i>Delete Post
-                </a>
-            </li>
-        </ul>
-    </div>
-{% endif %}
 
 
                 <div>
                     {% for pos in posts %}
+                    <p>
+                         DEBUG POST USER: {{ pos.user }} |
+                         LOGIN USER: {{ request.user.username }}
+                    </p>
+
+                    {% if pos.user == request.user.username %}
+                      <div class="dropdown">
+                      <button class="btn btn-sm btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      <i class="fa-solid fa-ellipsis-vertical"></i>
+                      </button>
+                <ul class="dropdown-menu">
+            <li>
+                <a class="dropdown-item text-danger" href="{% url 'delete-post' pos.id %}">
+                    <i class="fa-solid fa-trash me-2"></i>Delete Post
+                </a>
+            </li>
+        </ul>
+       </div>
+      {% endif %}
                     <div class="container" id="{{ pos.id }}">
                         <div class="row">
                             <div class="col-md-6 mx-auto">
