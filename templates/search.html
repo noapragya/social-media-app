@@ -1,0 +1,22 @@
+<!-- Search User Modal (#exampleModal3) -->
+<div class="modal fade" id="exampleModal3" tabindex="-1" aria-labelledby="exampleModal3Label" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModal3Label">Search Users</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form action="/search" method="POST">
+        {% csrf_token %}
+        <div class="modal-body">
+          <div class="input-group">
+            <input type="text" name="username" class="form-control" placeholder="Search by username..." required>
+            <button class="btn btn-primary" type="submit">
+              <i class="fa-solid fa-magnifying-glass"></i>
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

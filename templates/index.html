@@ -1,0 +1,59 @@
+{% for pos in posts %}
+<div class="card mb-4 shadow-sm">
+  
+  <!-- Post Header: Username & Menu -->
+  <div class="card-header bg-white d-flex justify-content-between align-items-center">
+    <a href="/profile/{{ pos.user }}" class="fw-bold text-decoration-none">@{{ pos.user }}</a>
+
+    <!-- Only show this menu if LOGGED IN USER == POST AUTHOR -->
+    {% if user.username == pos.user %}
+      <div class="dropdown">
+        <button class="btn btn-sm btn-link text-dark p-0 border-0" type="button" data-bs-toggle="dropdown">
+          <i class="fa-solid fa-ellipsis-vertical"></i>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+          <li>
+            <button class="dropdown-item text-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ pos.id }}">
+              <i class="fa-solid fa-trash me-2"></i> Delete Post
+            </button>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Confirmation Modal for THIS specific post -->
+      <div class="modal fade" id="deleteModal{{ pos.id }}" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title text-danger fw-bold">Delete Post</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              Are you sure you want to delete this post?
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+              <a href="{% url 'delete-post' pos.id %}" class="btn btn-danger btn-sm fw-bold">Delete</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endif %}
+  </div>
+
+  <!-- Post Image -->
+  {% if pos.image %}
+    <img src="{{ pos.image.url }}" class="card-img-top" alt="Post photo">
+  {% endif %}
+
+  <!-- Post Caption -->
+  <div class="card-body">
+    <p class="card-text">{{ pos.caption }}</p>
+  </div>
+
+</div>
+{% empty %}
+<div class="text-center py-5 text-muted">
+  <p>No posts available.</p>
+</div>
+{% endfor %}

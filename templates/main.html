@@ -1,0 +1,185 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Social Media</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    
+    <!-- FontAwesome -->
+    <script src="https://kit.fontawesome.com/cb792c0850.js" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="{% static 'css/app.css' %}">
+    <style>
+        /* Custom styles for the sidebar */
+        .sidebar {
+            background-color: #f8f9fa;
+            height: 100vh;
+            color: black;
+        }
+
+        .profile-pic {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        a {
+            color: black;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <nav class="col-md-2 d-none d-md-block sidebar" style="position: fixed;">
+                <div class="text-center mt-3">
+                    {% if user.profile.profileimg %}
+                    <img src="{{ user.profile.profileimg.url }}" alt="Profile Picture" class="profile-pic">
+                    {% else %}
+                    <img src="{% static 'images/default.jpg' %}" alt="Profile Picture" class="profile-pic">
+                    {% endif %}
+                    <h4 class="mt-2"><a href="/profile/{{ user.username }}" style="text-decoration:none;">@{{ user.username }}</a></h4>
+                </div>
+                
+                <ul class="nav flex-column mt-4">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{% url 'home' %}">
+                            <i class="fa-solid fa-house me-1"></i> Home
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/explore">
+                            <i class="fa-solid fa-compass me-1"></i> Explore
+                        </a>
+                    </li>
+
+                    <!-- Notifications Link Added Here -->
+                     <!-- Messages Link -->
+
+
+<li class="nav-item">
+    <a class="nav-link d-flex justify-content-between align-items-center" href="{% url 'inbox' %}">
+        <span><i class="fa-solid fa-paper-plane me-1"></i> Messages</span>
+        {% if unread_messages_count > 0 %}
+            <span class="badge bg-danger rounded-pill px-2">{{ unread_messages_count }}</span>
+        {% endif %}
+    </a>
+</li>
+                    <li class="nav-item">
+                        <a class="nav-link d-flex align-items-center justify-content-between" href="{% url 'notifications' %}">
+                            <span><i class="fa-solid fa-bell me-1"></i> Notifications</span>
+                            {% if unread_notifications_count > 0 %}
+                                <span class="badge bg-danger rounded-pill">{{ unread_notifications_count }}</span>
+                            {% endif %}
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#exampleModal3">
+                            <i class="fa-solid fa-magnifying-glass me-1"></i> Search
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                            <i class="fa-solid fa-circle-plus me-1"></i> Create Post
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/profile/{{ user.username }}">
+                            <i class="fa-solid fa-user me-1"></i> Profile
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-danger" href="{% url 'logout' %}">
+                            <i class="fa-solid fa-right-from-bracket me-1"></i> Logout
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+            <!-- Main content area -->
+            <main role="main" class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+                
+                {% include "modal.html" %}
+                {% include "search.html" %}
+
+                <!-- Home Posts Feed -->
+                 <!-- Check if the logged-in user is the author of the post -->
+{% if post.user == request.user.username %}
+    <div class="dropdown">
+        <button class="btn btn-sm btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="fa-solid fa-ellipsis-vertical"></i>
+        </button>
+        <ul class="dropdown-menu">
+            <li>
+                <a class="dropdown-item text-danger" href="{% url 'delete-post' post.id %}">
+                    <i class="fa-solid fa-trash me-2"></i>Delete Post
+                </a>
+            </li>
+        </ul>
+    </div>
+{% endif %}
+
+
+                <div>
+                    {% for pos in posts %}
+                    <div class="container" id="{{ pos.id }}">
+                        <div class="row">
+                            <div class="col-md-6 mx-auto">
+                                <div class="post-card" style="border: 1px solid #dbdbdb; margin: 30px 0; border-radius: 8px; background: white;">
+                                    {% if pos.image %}
+                                    <img src="{{ pos.image.url }}" alt="Post Image" class="post-image img-fluid"
+                                        style="max-height: 584px; width:100%; object-fit: cover;">
+                                    {% endif %}
+                                    
+                                    <div class="post-content p-3">
+                                        <h5><a href="/profile/{{ pos.user }}" style="text-decoration: none;">@{{ pos.user }}</a></h5>
+                                        <p class="mb-1">{{ pos.caption }}</p>
+                                        <p class="text-muted small">{{ pos.created_at }}</p>
+                                        <hr>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <a href="/like-post/{{ pos.id }}" class="btn btn-outline-primary btn-sm">Like</a>
+
+                                            {% if pos.no_of_likes == 0 %}
+                                            <span class="text-muted small">0 likes</span>
+                                            {% elif pos.no_of_likes == 1 %}
+                                            <span class="text-muted small">Liked by 1 person</span>
+                                            {% else %}
+                                            <span class="text-muted small">Liked by {{ pos.no_of_likes }} people</span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="text-center py-5 text-muted ms-auto">
+                        <i class="fa-solid fa-images fa-3x mb-3"></i>
+                        <p>No posts available. Click "Create Post" in the sidebar to upload!</p>
+                    </div>
+                    {% endfor %}
+                </div>
+
+            </main>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="{% static 'js/app.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>
